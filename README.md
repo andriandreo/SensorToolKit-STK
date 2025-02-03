@@ -1,2 +1,4 @@
 # SensorToolKit-STK
-Portable potentiostat built upon AD5940/AD5941 Analog Front End (Analog Devices, Inc.) designed for IoT applications interfacing electrochemical sensors
+This branch hosts beta versions and trials used during the development of the STK framework and firmware prior the proper release versions. 
+
+**None of the files here are intented to be used as working code. FOR FURTHER REFERENCE ONLY.**
