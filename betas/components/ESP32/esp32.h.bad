@@ -4,7 +4,7 @@
  *             Header file.
  * 
  * @author     Andrés Alberto Andreo Acosta
- * @version    V1.0.1
+ * @version    V0.0.1
  * @date       December 2023
  * 
  * @par        Revision History:
