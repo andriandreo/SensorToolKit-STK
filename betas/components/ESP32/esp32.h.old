@@ -1,0 +1,145 @@
+/******************************************************************************  
+ * @file       esp32.h
+ * @brief      (Generic) ESP32 board implementation code needed for port file.
+ *             Header file.
+ * 
+ * @author     Andrés Alberto Andreo Acosta
+ * @version    V1.0.0
+ * @date       November 2023
+ * 
+ * @par        Revision History:
+ * @todo       * Add support for other ESP32 boards.
+ *             * Implement Wi-Fi, Bluetooth and MQTT functionalities. 
+ * 
+ * This software is built in collaboration with JLM Innovation GmbH.
+ * 
+ * It is intended to include all the declarations, definitions, macros and
+ * functions needed for the port file of the ESP32 board family as suggested
+ * by Analog Devices, Inc. in the AD594x porting guide.
+ * 
+ * It is intended for use in conjunction of the ESP-IDF framework.
+******************************************************************************/
+
+// Include guard
+#ifndef ESP32_H
+#define ESP32_H
+
+// Include dependencies
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h" // Needed for delay functions with `vTaskDelay`
+#include "esp_task_wdt.h"  // Needed for watchdog timer functions
+#include "freertos/queue.h"
+#include "driver/spi_master.h"
+#include "driver/gpio.h"
+
+#include "esp_log.h"
+#include "esp_err.h"
+#include "esp_system.h"
+
+/* Definition of ESP32 SPI PINS */
+#ifdef CONFIG_IDF_TARGET_ESP32
+#  ifdef CONFIG_EXAMPLE_USE_SPI1_PINS
+#    define AD594x_HOST    SPI1_HOST
+// Use default pins, same as the flash chip.
+#    define PIN_NUM_MISO 7
+#    define PIN_NUM_MOSI 8
+#    define PIN_NUM_CLK  6
+#  else
+#    define AD594x_HOST    HSPI_HOST
+#    define PIN_NUM_MISO 18
+#    define PIN_NUM_MOSI 23
+#    define PIN_NUM_CLK  19
+#  endif
+
+#  define PIN_NUM_CS   13
+#elif defined CONFIG_IDF_TARGET_ESP32S2
+#  define AD594x_HOST    SPI2_HOST
+
+#  define PIN_NUM_MISO 37
+#  define PIN_NUM_MOSI 35
+#  define PIN_NUM_CLK  36
+#  define PIN_NUM_CS   34
+#elif defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C6)
+#  define AD594x_HOST    SPI2_HOST
+
+#  define PIN_NUM_MISO 9
+#  define PIN_NUM_MOSI 10
+#  define PIN_NUM_CLK  8
+#  define PIN_NUM_CS   20
+
+#elif CONFIG_IDF_TARGET_ESP32S3
+#  define AD594x_HOST    SPI2_HOST
+
+#  define PIN_NUM_MISO 8
+#  define PIN_NUM_MOSI 9
+#  define PIN_NUM_CLK  7
+#  define PIN_NUM_CS   44
+
+#elif CONFIG_IDF_TARGET_ESP32H2
+#  define AD594x_HOST    SPI2_HOST
+
+#  define PIN_NUM_MISO 0
+#  define PIN_NUM_MOSI 5
+#  define PIN_NUM_CLK  4
+#  define PIN_NUM_CS   1
+#endif
+
+/* Definition of ESP32 UART0 PINS */
+#if defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C6)
+#  define PIN_NUM_RX   20
+#  define PIN_NUM_TX   21
+
+#elif CONFIG_IDF_TARGET_ESP32S3
+#  define PIN_NUM_RX   44
+#  define PIN_NUM_TX   43
+
+#else
+#error Please rewirte code according to your design and layout as XIAO boards only support ESP32-S3/ESP32-C3.
+#endif
+
+/* Definition for AD5940 Pins */
+#define AD5940_SCK_PIN                     PIN_NUM_CLK
+#define AD5940_MISO_PIN                    PIN_NUM_MISO
+#define AD5940_MOSI_PIN                    PIN_NUM_MOSI
+#define AD5940_CS_PIN                      PIN_NUM_CS
+
+#if defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C6)
+#define AD5940_RST_PIN                     21   
+#define AD5940_GP0INT_PIN                  3
+#define AD5940_GP1_PIN                     4
+#define AD5940_GP2_PIN                     5
+
+#elif CONFIG_IDF_TARGET_ESP32S3
+#define AD5940_RST_PIN                     43   
+#define AD5940_GP0INT_PIN                  2
+#define AD5940_GP1_PIN                     3
+#define AD5940_GP2_PIN                     4
+
+#else
+#error Please rewirte code according to your design and layout as XIAO boards only support ESP32-S3/ESP32-C3.
+#endif
+
+/******************************************************************************
+ * @brief Setup function for initialising ESP32 SPI protocol
+ * 
+******************************************************************************/ 
+void esp_initSPI(void);
+
+/******************************************************************************
+ * @brief Setup function for initialising ESP32 GPIOs in accordance to AD594x
+ * 
+******************************************************************************/ 
+void esp_initGPIO(void);
+
+/******************************************************************************
+ * @brief Function for R/W 'N' single bytes via ESP32 SPI protocol
+ * 
+******************************************************************************/ 
+void esp_spi_ReadWriteNBytes(uint8_t *pSendBuffer, uint8_t *pRecvBuff, unsigned long length);
+
+#endif // ESP32_H

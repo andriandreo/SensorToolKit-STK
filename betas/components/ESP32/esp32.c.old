@@ -1,0 +1,131 @@
+/******************************************************************************
+ * @file       esp32.c
+ * @brief      (Generic) ESP32 board implementation code needed for port file.
+ *             Source file.
+ * 
+ * @author     Andrés Alberto Andreo Acosta
+ * @version    V1.0.0
+ * @date       November 2023
+ * 
+ * @par        Revision History:
+ * @todo       * Add support for other ESP32 boards.
+ *             * Implement Wi-Fi, Bluetooth and MQTT functionalities. 
+ * 
+ * This software is built in collaboration with JLM Innovation GmbH.
+ * 
+ * It is intended to include all the declarations, definitions, macros and
+ * functions needed for the port file of the ESP32 board family as suggested
+ * by Analog Devices, Inc. in the AD594x porting guide.
+ * 
+ * It is intended for use in conjunction of the ESP-IDF framework.
+******************************************************************************/
+
+// Include guard
+#ifndef ESP32_C
+#define ESP32_C
+
+// Include dependencies
+#include "esp32.h"
+
+static const char TAG[] = "esp32-AD594x";
+spi_device_handle_t spi;
+
+void esp_initSPI(void){
+    esp_err_t ret;
+#ifndef CONFIG_EXAMPLE_USE_SPI1_PINS
+    ESP_LOGI(TAG, "Initializing bus SPI%d...", AD594x_HOST+1); // '+1' as `SPI_HOST` is 0-based (SPI1=0, SPI2=1,...)
+    spi_bus_config_t buscfg={
+        .miso_io_num = PIN_NUM_MISO,
+        .mosi_io_num = PIN_NUM_MOSI,
+        .sclk_io_num = PIN_NUM_CLK,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .max_transfer_sz = SOC_SPI_MAXIMUM_BUFFER_SIZE,
+    };
+    spi_device_interface_config_t devcfg={
+        //.command_bits = 8,                        // `ad5940` library ultimately uses N * 8-bit commands in its functions. NOT SURE WHY IS '0' FOR AD594x
+        //.address_bits = 8,                        // `ad5940` library ultimately uses N * 8-bit commands in its functions. NOT SURE WHY IS '0' FOR AD594x
+        //.dummy_bits = 8,                          // AFE needs 1 byte as per Datasheet - NOT SURE IF ALREADY HANDLED by AD594x, i.e. '= 0'
+        .clock_source = SPI_CLK_SRC_DEFAULT,      // Cannot use XTAL as it is not connected to the ESP32, just to AFE
+        .clock_speed_hz = SPI_MASTER_FREQ_16M,    // Clock out at 16 MHz
+        .mode = 0,                                // SPI mode 0 (SCLK idles low, data clocked on SCLK falling edge)
+        .spics_io_num = PIN_NUM_CS,               // CS pin - Also works without setting it!
+        .queue_size = 1,                          // No 'queing' is intended as per Datasheet [!!!]
+        //.pre_cb=afe_spi_pre_transfer_callback,  // Specify pre-transfer callback to handle D/C line – Needed for displays and other peripherals, usually not AFEs
+    };
+    // Initialize the SPI bus
+    ret = spi_bus_initialize(AD594x_HOST, &buscfg, SPI_DMA_CH_AUTO);
+    ESP_ERROR_CHECK(ret);
+#else
+    ESP_LOGI(TAG, "Attach to main bus...");
+#endif
+    // Attach the AFE to the SPI bus
+    ret=spi_bus_add_device(AD594x_HOST, &devcfg, &spi);
+    ESP_ERROR_CHECK(ret);
+}
+
+void esp_initGPIO(void){
+    gpio_reset_pin(AD5940_CS_PIN);
+    gpio_set_direction(AD5940_CS_PIN, GPIO_MODE_INPUT_OUTPUT);
+    gpio_set_pull_mode(AD5940_CS_PIN, GPIO_PULLUP_ONLY);
+    gpio_set_intr_type(AD5940_CS_PIN, GPIO_INTR_DISABLE); // Disable interrupt (only in GPIO0)
+
+    gpio_reset_pin(AD5940_RST_PIN);
+    gpio_set_direction(AD5940_RST_PIN, GPIO_MODE_INPUT_OUTPUT);
+    gpio_set_pull_mode(AD5940_RST_PIN, GPIO_PULLUP_ONLY);
+    gpio_set_intr_type(AD5940_RST_PIN, GPIO_INTR_DISABLE); // Disable interrupt (only in GPIO0)
+
+    gpio_reset_pin(AD5940_GP0INT_PIN);
+    gpio_set_direction(AD5940_GP0INT_PIN, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(AD5940_GP0INT_PIN, GPIO_PULLUP_ONLY);
+    gpio_set_intr_type(AD5940_GP0INT_PIN, GPIO_INTR_NEGEDGE); // Interrupt on falling edge
+
+    gpio_reset_pin(AD5940_GP1_PIN);
+    gpio_set_direction(AD5940_GP1_PIN, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(AD5940_GP1_PIN, GPIO_PULLDOWN_ONLY);
+    gpio_set_intr_type(AD5940_GP1_PIN, GPIO_INTR_DISABLE); // Disable interrupt (only in GPIO0)
+
+    gpio_reset_pin(AD5940_GP2_PIN);
+    gpio_set_direction(AD5940_GP2_PIN, GPIO_MODE_INPUT);
+    gpio_set_pull_mode(AD5940_GP2_PIN, GPIO_PULLDOWN_ONLY);
+    gpio_set_intr_type(AD5940_GP2_PIN, GPIO_INTR_DISABLE); // Disable interrupt (only in GPIO0)
+}
+
+void esp_spi_ReadWriteNBytes(uint8_t *pSendBuffer, uint8_t *pRecvBuff, unsigned long length){
+    if (length==0) return;                 // No need to send anything
+
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));              // Zero out the transaction
+    t.length = length * 8;                 // `length` parameter in bytes, transaction `t.length` is in bits.
+    t.tx_buffer = pSendBuffer;             // TX Data to be sent (Write)
+    t.rx_buffer = pRecvBuff;               // RX Data to be received (Read)
+    
+    /*******************************************************************************
+     * Alternative using buffers and (interchangeable) C99 struct designated initialiser to avoid `memset`:
+    spi_transaction_t t = {
+        .length = length * 8,                 // `length` parameter in bytes, transaction `t.length` is in bits.
+        .tx_buffer = pSendBuffer,             // TX Data to be sent (Write)
+        .rx_buffer = pRecvBuff,               // RX Data to be received (Read)
+    };
+    *******************************************************************************/
+
+    /*******************************************************************************
+     * Alternative using `tx_data`/`rx_data` - NOT WORKING:
+    spi_transaction_t t = {
+        .length = length * 8,                 // `length` parameter in bytes, transaction `t.length` is in bits.
+        .flags = SPI_TRANS_USE_TXDATA | SPI_TRANS_USE_RXDATA, // Use `tx_data`/`rx_data` directly instead of buffer (32-bit limit)
+        .tx_data[0] = *pSendBuffer,           // TX Data to be sent (Write)
+        .rx_data[0] = 0,                      // RX Data to be received (Read) - Initialisation to '0', not needed with C99 struct designated initialiser
+    };
+
+    esp_err_t ret = spi_device_polling_transmit(spi, &t);  // Transmit!
+    assert(ret == ESP_OK);          // Should have had no issues.
+
+    *pRecvBuff = t.rx_data[0];       // Recover RX Data to be received (Read)
+    *******************************************************************************/
+   
+    esp_err_t ret = spi_device_polling_transmit(spi, &t);  // Transmit!
+    assert(ret == ESP_OK);          // Should have had no issues.
+}
+
+#endif // ESP32_C
