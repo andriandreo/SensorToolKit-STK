@@ -5,17 +5,16 @@
  *             Data is sent to a MQTT broker via Wi-Fi. 
  * 
  * @author     Andrés Alberto Andreo Acosta
- * @version    V1.0.1
- * @date       January 2024
+ * @version    V1.0.2
+ * @date       March 2024
  * 
  * @par        Revision History:
- *             * Implemented NOTCH filter for best results 
- *             * Firt implementation of Wi-Fi and MQTT connectivity
- *
+ *             * Reduced unused code 
+ *             * Optimized LPTIA Switch configuration for OCP
+ * 
  * @todo       * Check for differences between several ADC MUX inputs.
- *             * Check for the utility of the Digital + Notch Filters (w/ vs. w/o)
- *             * Check whether the calibration parameters need to match operational ones (?)
- *             * Implement Bluetooth functionality. 
+ *             * Test HSTIA as the AFE for MUX with Switch Matrix
+ *             * Implement Bluetooth functionality.
  * 
  * ****************************************************************************
  * This software is an implementation for OCP measurementes using the AD594x
@@ -46,27 +45,22 @@
     @{
   */
 
- // Include guard
+// Include guard
 #ifndef AD5940_OCP_ADCPolling_C
 #define AD5940_OCP_ADCPolling_C
 
 // Include dependencies
 #include "ad5940.h"
 #include "esp32.h"
-#include <stdio.h>
 
 #define ADCPGA_GAIN_SEL   ADCPGA_1P5
-#define AD5940_MAX_DAC_OUTPUT   2400.0      // Max. voltage the 6-Bit and 12-Bit DAC can provide
-#define AD5940_MIN_DAC_OUTPUT   200.0       // Min. voltage the 6-Bit and 12-Bit DAC can provide
-#define AD5940_6BIT_DAC_1LSB    ((AD5940_MAX_DAC_OUTPUT - AD5940_MIN_DAC_OUTPUT) / 64)      // Size of one LSB of the 6-Bit DAC
-#define AD5940_12BIT_DAC_1LSB   ((AD5940_MAX_DAC_OUTPUT - AD5940_MIN_DAC_OUTPUT) / 4095)    // Size of one LSB of the 12-Bit DAC
 
 static void AD5940_PGA_Calibration(void){
   AD5940Err err;
   ADCPGACal_Type pgacal;
   pgacal.AdcClkFreq = 16e6;
-  pgacal.ADCSinc2Osr = ADCSINC2OSR_178;
   pgacal.ADCSinc3Osr = ADCSINC3OSR_4;
+  pgacal.ADCSinc2Osr = ADCSINC2OSR_178;
   pgacal.SysClkFreq = 16e6;
   pgacal.TimeOut10us = 1000;
   pgacal.VRef1p11 = 1.11f;
@@ -113,36 +107,23 @@ static void AD5940_AFERefBuffer_Init(void){
 
 static void AD5940_LPLoop_Init(void){
   LPLoopCfg_Type LPLoop_cfg;
+
+  // Low power PA & TIA configs
   // Chose LPAMP0 because LPAMP1 is only available on ADuCM355
   LPLoop_cfg.LpAmpCfg.LpAmpSel = LPAMP0;
-  //LPLoop_cfg.LpAmpCfg.LpAmpPwrMod = LPAMPPWR_NORM; // Normal power mode
-  LPLoop_cfg.LpAmpCfg.LpAmpPwrMod = LPAMPPWR_BOOST3; // This setting increases amplifier bandwidth and output current capability to the max
-  // Enable potential amplifier
-  LPLoop_cfg.LpAmpCfg.LpPaPwrEn = bTRUE;
+  LPLoop_cfg.LpAmpCfg.LpAmpPwrMod = LPAMPPWR_NORM; // Normal power mode
+  //LPLoop_cfg.LpAmpCfg.LpAmpPwrMod = LPAMPPWR_BOOST3; // This setting increases amplifier bandwidth and output current capability to the max
+  // Disable potential amplifier (no bias voltage supplied)
+  LPLoop_cfg.LpAmpCfg.LpPaPwrEn = bFALSE;
   // Enable low power TIA amplifier
   LPLoop_cfg.LpAmpCfg.LpTiaPwrEn = bTRUE;
-  LPLoop_cfg.LpAmpCfg.LpTiaRf = LPTIARF_20K; // Low-pass RC Filter resistor to 20 kOhm
+  LPLoop_cfg.LpAmpCfg.LpTiaRf = LPTIARF_20K; // Low-pass RC Filter resistor to 20 kOhm (not really needed/used, just in case)
   LPLoop_cfg.LpAmpCfg.LpTiaRload = LPTIARLOAD_SHORT; // 0 Ohm Rload
-  LPLoop_cfg.LpAmpCfg.LpTiaRtia = LPTIARTIA_OPEN; // LPTIA Internal RTIA to 20 kOhm
+  LPLoop_cfg.LpAmpCfg.LpTiaRtia = LPTIARTIA_OPEN; // Disconnect LPTIA Internal RTIA
   // Leave SW2 and SW4 open to prevent controlling the CE/ RE pins
   // Close swtiches to support internal resistor (SW6 is connecting -Ve of PA to +Ve of LPTIA)
-  //LPLoop_cfg.LpAmpCfg.LpTiaSW = LPTIASW(4) | LPTIASW(7);
-  LPLoop_cfg.LpAmpCfg.LpTiaSW = LPTIASW(5) | LPTIASW(12) | LPTIASW(13);
-
-  // Low power DAC config
-  // Chose LPDAC0 because LPDAC1 is only available on ADuCM355
-  LPLoop_cfg.LpDacCfg.LpdacSel = LPDAC0;
-  // Disable connection from DACS to amplifiers
-  //LPLoop_cfg.LpDacCfg.LpDacSW = 0;
-  LPLoop_cfg.LpDacCfg.LpDacSW = LPDACSW_VBIAS2PIN | LPDACSW_VZERO2PIN;
-  // Set reference for low power DAC to internal 2.5 V
-  LPLoop_cfg.LpDacCfg.LpDacRef = LPDACREF_2P5;
-  // Connect 12-Bit DAC to Vbias
-  LPLoop_cfg.LpDacCfg.LpDacVbiasMux = LPDACVBIAS_12BIT;
-  // Connect 6-Bit DAC to Vzero
-  LPLoop_cfg.LpDacCfg.LpDacVzeroMux = LPDACVZERO_6BIT;
-  // Power off register where 6-Bit and 12-Bit DAC write their data to
-  LPLoop_cfg.LpDacCfg.PowerEn = bFALSE;
+  LPLoop_cfg.LpAmpCfg.LpTiaSW = LPTIASW(5); // SW5 needed | short to AIN4/LPF0 (ADC IN) for correct measurements (!)
+  //LPLoop_cfg.LpAmpCfg.LpTiaSW = LPTIASW(11); // Close SW11 to short RE0 and SE0: `ADCMUXN_LPTIA0_N` also routes to RE0
 
   // Apply the settings and write to corresponding registers
   AD5940_LPLoopCfgS(&LPLoop_cfg);
@@ -169,8 +150,10 @@ void AD5940_Main(void)
   AD5940_AFEPwrBW(AFEPWR_LP, AFEBW_250KHZ);
   
   /* Initialize ADC basic function */
-  adc_base.ADCMuxP = ADCMUXP_VRE0; // RE0 (RE)
-  adc_base.ADCMuxN = ADCMUXN_LPTIA0_N; // SE0 (WE)
+  adc_base.ADCMuxP = ADCMUXP_VRE0; // RE0 (RE) - Any IN is possible. Discharge caps (connect INx to PSU GND or measure PSU) if facing offset/noise issues prior sensing
+  //adc_base.ADCMuxP = ADCMUXP_VAFE4; // AFE4Z input pin - Should work, but failed tests
+  adc_base.ADCMuxN = ADCMUXN_LPTIA0_N; // SE0 (WE) - Only possible IN for RE. Can short SE0 & RE0 | SW11, but then you lose 1 IN (SE0)
+  //adc_base.ADCMuxN = ADCMUXN_VZERO0; // Noisy w/ SOECs, even after cap discharge w/ GND (PSU)
   adc_base.ADCPga = ADCPGA_GAIN_SEL;
   AD5940_ADCBaseCfgS(&adc_base);
   
@@ -181,12 +164,12 @@ void AD5940_Main(void)
   adc_filter.ADCAvgNum = ADCAVGNUM_2;         /* Don't care about it. Average function is only used for DFT */
   adc_filter.ADCRate = ADCRATE_800KHZ;        /* If ADC clock is 32MHz, then set it to ADCRATE_1P6MHZ. Default is 16MHz, use ADCRATE_800KHZ. */
   //adc_filter.BpNotch = bTRUE;                 /* SINC2+Notch is one block, when bypass notch filter, we can get fresh data from SINC2 filter. HERE BYPASSED (!) */
-  adc_filter.BpNotch = bFALSE;                 /* SINC2+Notch is one block, when bypass notch filter, we can get fresh data from SINC2 filter. HERE USED (!) */
+  adc_filter.BpNotch = bFALSE;                /* SINC2+Notch is one block, when bypass notch filter, we can get fresh data from SINC2 filter. HERE USED (!) */
   adc_filter.BpSinc3 = bFALSE;                /* We use SINC3 filter. */   
-  adc_filter.Sinc2NotchEnable = bTRUE;        /* Enable the SINC2+Notch block. You can also use function AD5940_AFECtrlS */ 
+  adc_filter.Sinc2NotchEnable = bTRUE;        /* Enable the SINC2+Notch block. You can also use function AD5940_AFECtrlS. SEE BELOW (!) */ 
   AD5940_ADCFilterCfgS(&adc_filter);
   
-  //AD5940_ADCMuxCfgS(ADCMUXP_AIN1, ADCMUXN_AIN0);   /* Optionally, you can change ADC MUX with this function */ // [!!!] - INPUT CHANGE HERE!
+  //AD5940_ADCMuxCfgS(ADCMUXP_AIN1, ADCMUXN_AIN0);   /* Optionally, you can change ADC MUX with this function */
 
   /* Enable all interrupt at Interrupt Controller 1. So we can check the interrupt flag */
   AD5940_INTCCfg(AFEINTC_1, AFEINTSRC_ALLINT, bTRUE); 
@@ -213,7 +196,7 @@ void AD5940_Main(void)
         float diff_volt = AD5940_ADCCode2Volt(rd, ADCPGA_GAIN_SEL, 1.82);
         printf("ADC Code: %d, diff-volt: %.4f\n",(int)rd, diff_volt);
         snprintf(MQTTstring, sizeof(MQTTstring), "{\"ADCCode\":%d, \"OCP\":%.4f}", (int)rd, diff_volt);
-        //printf("%s\n", MQTTstring);
+        printf("%s\n", MQTTstring);
         esp_sendMQTT("SENSOR/OCP", MQTTstring);
       }
     }
