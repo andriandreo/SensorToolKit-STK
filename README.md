@@ -24,7 +24,7 @@ However, certain pieces of the code are adapted either from [Analog Devices, Inc
 
 ## Firmware 
 
-The tested port for ESP32 MCUs (full support for ESP32-S3 and ESP32-C3 XIAO boards by [SeeedStudio](https://www.seeedstudio.com/)) and applications/techniques are hosted inside the [`Firmware` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware).
+The tested port for ESP32 MCUs (including full support for ESP32-S3 and ESP32-C3 XIAO boards by [SeeedStudio](https://www.seeedstudio.com/)) and implemented applications/techniques are hosted inside the [`Firmware` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware).
 
 Further information related to its setup can be found in the corresponding [`README`](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware/README.md) inside.
 
