@@ -3,14 +3,15 @@
  * @brief      Main source file for the setup and implementation of AD594x apps.
  * 
  * @author     Andrés Alberto Andreo Acosta
- * @version    V1.0.0
- * @date       October 2024
+ * @version    V2.0.0
+ * @date       January 2025
  * 
  * @par        Revision History:
  *              * Added support for other ESP32 boards.
+ *              * Implemented Wi-Fi and MQTT functionality.
  *              * Checked for redundant includes.
  * 
- * @todo       * Implement Wi-Fi, Bluetooth and MQTT functionality.
+ * @todo       * Implement Bluetooth functionality.
  *             * Re-implement SPI transactions to use tx and rx data instead of buffers.
  *             * Analyse the need for SPI lazy init.
  *             * Implement UART-INTR functionality if needed.
@@ -51,6 +52,7 @@
 // Include dependencies
 #include <stdio.h>
 #include "ad5940.h"
+#include "esp32.h"
 
 /* Functions that used to initialize MCU platform */
 uint32_t MCUPlatformInit(void *pCfg);
@@ -80,6 +82,12 @@ uint32_t MCUPlatformInit(void *pCfg)
 {
   /* Init UART */  
   // Configured and started by default in ESP32 via USB, otherwise setup `UrtCfg(int iBaud)` function
+
+  /* Init Wi-Fi and MQTT */
+  esp_initLOG();
+  esp_initWIFI();
+  esp_initMQTT();
+  
 	return 1;
 }
 
