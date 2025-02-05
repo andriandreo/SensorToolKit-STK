@@ -30,7 +30,7 @@ Further information related to its setup can be found in the corresponding [`REA
 
 ## Server Side
 
-The Server Side infrastructure built upon Docker containers and setup information thereof can be found inside the [`Server Side` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Server Side).
+The Server Side infrastructure built upon Docker containers and setup information thereof can be found inside the [`Server Side` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Server%20Side).
 
 
 
