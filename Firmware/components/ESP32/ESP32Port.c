@@ -3,16 +3,18 @@
  * @brief      (Generic) ESP32 board port file.
  * 
  * @author     Andrés Alberto Andreo Acosta
- * @version    V1.0.0
- * @date       October 2024
+ * @version    V2.0.0
+ * @date       January 2025
  * 
  * @par        Revision History:
  *              * Added support for other ESP32 boards.
+ *              * Implemented Wi-Fi and MQTT functionality.
  *              * Checked for redundant includes.
  * 
- * @todo       * Re-implement SPI transactions to use tx/rx data instead of buffers.
+ * @todo       * Implement Bluetooth functionality.
+ *             * Re-implement SPI transactions to use tx/rx data instead of buffers.
  *             * Analyse the need for SPI lazy init.
- *             * Implement Wi-Fi, BLE and MQTT functionality.
+ *             * Implement UART-INTR functionality if needed.
  * 
  * 
  * This software is a port of the AD5940 driver for the ESP32 board

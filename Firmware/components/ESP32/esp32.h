@@ -4,16 +4,18 @@
  *             Header file.
  * 
  * @author     Andrés Alberto Andreo Acosta
- * @version    V1.0.0
- * @date       October 2024
+ * @version    V2.0.0
+ * @date       January 2025
  * 
  * @par        Revision History:
  *              * Added support for other ESP32 boards.
+ *              * Implemented Wi-Fi and MQTT functionality.
  *              * Checked for redundant includes.
  * 
- * @todo       * Re-implement SPI transactions to use tx/rx data instead of buffers.
+ * @todo       * Implement Bluetooth functionality.
+ *             * Re-implement SPI transactions to use tx/rx data instead of buffers.
  *             * Analyse the need for SPI lazy init.
- *             * Implement Wi-Fi, BLE and MQTT functionality.
+ *             * Implement UART-INTR functionality if needed.
  * 
  * 
  * It is intended to include all the declarations, definitions, macros and
@@ -50,20 +52,32 @@
 
 // Include dependencies
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stddef.h>
+#include <string.h>
 #include <inttypes.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h" // Needed for delay functions with `vTaskDelay`
-#include "esp_task_wdt.h"  // Needed for watchdog timer functions
 #include "freertos/queue.h"
+#include "freertos/event_groups.h"
+
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
+#include "esp_wifi.h"
+#include "mqtt_client.h"
+#include "mqtt5_client.h"
 
+#include "esp_task_wdt.h"  // Needed for watchdog timer functions
+#include "esp_netif.h"
+#include "esp_event.h"
 #include "esp_log.h"
 #include "esp_err.h"
 #include "esp_system.h"
+#include "nvs_flash.h"
+
+#include "lwip/err.h"
+#include "lwip/sys.h"
 
 /* Definition of ESP32 SPI PINS */
 #ifdef CONFIG_IDF_TARGET_ESP32
@@ -161,6 +175,48 @@
 #error "Please, set the right AD594x-to-MCU interfacig pins according to your design"
 #endif
 
+/* 
+    This code uses Wi-Fi and MQTT configuration that you can set 
+    via project configuration menu `idf.py menuconfig`.
+
+    If you'd rather not, just change the below entries to strings with
+    the config you want - i.e. `#define ESP_WIFI_SSID "mywifissid"`
+*/
+#define ESP_WIFI_SSID      CONFIG_ESP_WIFI_SSID
+#define ESP_WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
+#define ESP_MAXIMUM_RETRY  CONFIG_ESP_MAXIMUM_RETRY
+
+#define ESP_MQTT_USER      CONFIG_ESP_MQTT_USER
+#define ESP_MQTT_PASS      CONFIG_ESP_MQTT_PASSWORD
+
+#if CONFIG_ESP_WPA3_SAE_PWE_HUNT_AND_PECK
+#define ESP_WIFI_SAE_MODE WPA3_SAE_PWE_HUNT_AND_PECK
+#define H2E_IDENTIFIER ""
+#elif CONFIG_ESP_WPA3_SAE_PWE_HASH_TO_ELEMENT
+#define ESP_WIFI_SAE_MODE WPA3_SAE_PWE_HASH_TO_ELEMENT
+#define H2E_IDENTIFIER CONFIG_ESP_WIFI_PW_ID
+#elif CONFIG_ESP_WPA3_SAE_PWE_BOTH
+#define ESP_WIFI_SAE_MODE WPA3_SAE_PWE_BOTH
+#define H2E_IDENTIFIER CONFIG_ESP_WIFI_PW_ID
+#endif
+#if CONFIG_ESP_WIFI_AUTH_OPEN
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_OPEN
+#elif CONFIG_ESP_WIFI_AUTH_WEP
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WEP
+#elif CONFIG_ESP_WIFI_AUTH_WPA_PSK
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA_PSK
+#elif CONFIG_ESP_WIFI_AUTH_WPA2_PSK
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA2_PSK
+#elif CONFIG_ESP_WIFI_AUTH_WPA_WPA2_PSK
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA_WPA2_PSK
+#elif CONFIG_ESP_WIFI_AUTH_WPA3_PSK
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA3_PSK
+#elif CONFIG_ESP_WIFI_AUTH_WPA2_WPA3_PSK
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WPA2_WPA3_PSK
+#elif CONFIG_ESP_WIFI_AUTH_WAPI_PSK
+#define ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD WIFI_AUTH_WAPI_PSK
+#endif
+
 /******************************************************************************
  * @brief Accessor function to get the ESP32 SPI handle (getter function)
  * 
@@ -180,9 +236,34 @@ void esp_initSPI(void);
 void esp_initGPIO(void);
 
 /******************************************************************************
+ * @brief Setup function for initialising ESP32 Wi-Fi protocol and connection
+ * 
+******************************************************************************/ 
+void esp_initWIFI(void);
+
+/******************************************************************************
+ * @brief Setup function for initialising ESP32 MQTT protocol and connection
+ * 
+******************************************************************************/ 
+void esp_initMQTT(void);
+
+/******************************************************************************
  * @brief Function for R/W 'N' single bytes via ESP32 SPI protocol
  * 
 ******************************************************************************/ 
 void esp_spi_ReadWriteNBytes(uint8_t *pSendBuffer, uint8_t *pRecvBuff, unsigned long length);
+
+/******************************************************************************
+ * @brief Function for sending a string to MQTT broker via ESP32 MQTT protocol
+ * 
+******************************************************************************/ 
+void esp_sendMQTT(char *topic, char *payload);
+
+
+/******************************************************************************
+ * @brief Setup function for initialising ESP32 LOG info display and capabilities
+ * 
+******************************************************************************/ 
+void esp_initLOG(void);
 
 #endif // ESP32_H
