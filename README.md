@@ -1,6 +1,6 @@
 # SensorToolKit-STK [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![GitHub Release](https://img.shields.io/github/release/tterb/PlayMusic.svg?style=flat)]() [![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg?style=flat)]()
 
-<img src="STK.jpg" alt="STK Board" width="500"/>
+<img src="STK.png" alt="STK Board" width="500"/>
 
 A portable potentiostat built upon AD5940/AD5941 Analog Front End (Analog Devices, Inc.) designed for distributed IoT applications interfacing electrochemical sensors.
 
