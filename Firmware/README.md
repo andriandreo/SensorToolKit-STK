@@ -1,6 +1,5 @@
 | Tested Targets | ESP32-C3 | ESP32-S3 |
-| -------------- | -------- | -------- | 
-(([XIAO DevKits](https://wiki.seeedstudio.com/SeeedStudio_XIAO_Series_Introduction/)))
+| [XIAO DevKits](https://wiki.seeedstudio.com/SeeedStudio_XIAO_Series_Introduction/) | 
 
 # STK - Firmware
 
