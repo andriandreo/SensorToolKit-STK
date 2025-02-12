@@ -141,8 +141,6 @@ uint32_t AD5940_MCUResourceInit(void *pCfg)
 }
 
 /* MCU related external line interrupt service routine */
-// The interrupt handler handles the interrupt to the MCU
-// when the AD594x INTC pin generates an interrupt to alert the MCU that data is ready
 void Ext_Int0_Handler(void *arg)
 {
   ucInterrupted = 1;
