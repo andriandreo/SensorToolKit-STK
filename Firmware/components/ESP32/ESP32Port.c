@@ -128,7 +128,7 @@ uint32_t AD5940_MCUResourceInit(void *pCfg)
   AD5940_CsSet();
   AD5940_RstSet();
   
-  /* Step 2. Configure external interrupot line */
+  /* Step 2. Configure external interrupt line */
   /* Initialize GPIO interrupt that connects to AD594x interrupt output pin (GP0, GP3, GP4, GP6 or GP7; GP3-7 are AD5940 only) */
   
   /* Enable and set EXTI Line0 Interrupt to the lowest priority */
