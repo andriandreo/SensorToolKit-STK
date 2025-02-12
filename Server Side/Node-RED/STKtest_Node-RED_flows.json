@@ -1,0 +1,168 @@
+[
+    {
+        "id": "27bdf837eb07d060",
+        "type": "tab",
+        "label": "STK_IoT",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8a44964c4a6531c3",
+        "type": "mqtt in",
+        "z": "27bdf837eb07d060",
+        "name": "OCPsensor",
+        "topic": "SENSOR/OCP",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "ed599269c9bbb893",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 370,
+        "y": 240,
+        "wires": [
+            [
+                "7512d1bfeddade59",
+                "6da556d2a7b68b41"
+            ]
+        ]
+    },
+    {
+        "id": "7512d1bfeddade59",
+        "type": "function",
+        "z": "27bdf837eb07d060",
+        "name": "Export Measurement",
+        "func": "msg.measurement = msg.topic.split(\"/\")[1];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 240,
+        "wires": [
+            [
+                "2ef39f4ded631009"
+            ]
+        ],
+        "info": "Export the Measurement from the MQTT topic: `SENSOR/measurement` syntax"
+    },
+    {
+        "id": "88ea13e78af9cfae",
+        "type": "influxdb out",
+        "z": "27bdf837eb07d060",
+        "influxdb": "eecd9643189c4f99",
+        "name": "STK_IoT",
+        "measurement": "OCP",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "us",
+        "retentionPolicyV18Flux": "",
+        "org": "STKproject",
+        "bucket": "Open Circuit Potentiometry",
+        "x": 940,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "6da556d2a7b68b41",
+        "type": "debug",
+        "z": "27bdf837eb07d060",
+        "name": "(in) MQTT msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 580,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7aa8c7634e91cb13",
+        "type": "debug",
+        "z": "27bdf837eb07d060",
+        "name": "(out) influxDB input",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 970,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "2ef39f4ded631009",
+        "type": "json",
+        "z": "27bdf837eb07d060",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 770,
+        "y": 240,
+        "wires": [
+            [
+                "88ea13e78af9cfae",
+                "7aa8c7634e91cb13"
+            ]
+        ]
+    },
+    {
+        "id": "ed599269c9bbb893",
+        "type": "mqtt-broker",
+        "name": "mosquitto",
+        "broker": "mqtt://mosquitto",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "5",
+        "keepalive": "180",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "eecd9643189c4f99",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://influxdb2:8086",
+        "timeout": "",
+        "rejectUnauthorized": true
+    }
+]

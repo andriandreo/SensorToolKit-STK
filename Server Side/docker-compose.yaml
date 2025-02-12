@@ -1,0 +1,81 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer-ce
+    restart: unless-stopped
+    ports:
+      - '9000:9000'
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./volumes/portainer-ce/data:/data
+    # Add other Portainer configuration options as needed
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    user: "1000"
+    ports:
+      - '3000:3000'
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - TZ=Europe/Madrid
+    volumes:
+      - ./volumes/grafana/data:/var/lib/grafana
+      - ./volumes/grafana/log:/var/log/grafana
+    # Add other Grafana configuration options as needed
+
+  influxdb:
+    image:  influxdb:latest
+    container_name: influxdb2
+    restart: unless-stopped
+    ports:
+      - '8086:8086'
+    environment:
+      - INFLUXDB_BOLT_PATH=/var/lib/influxdb2/influxd.bolt
+      - INFLUXDB_ENGINE_PATH=/var/lib/influxdb2/engine
+      - INFLUXDB_CONFIGURATION_PATH=/etc/influxdb2
+      - INFLUXDB_HTTP_BIND_ADDRESS=:8086
+      - INFLUXDB_REPORTING_DISABLED=true
+      - TZ=Europe/Madrid
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - ./volumes/influxdb2/config:/etc/influxdb2
+      - ./volumes/influxdb2/backup:/var/lib/backup
+    # Add other InfluxDB 2.x configuration options as needed
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: unless-stopped
+    user: "1000"
+    ports:
+      - '1880:1880'
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - ./volumes/nodered/data:/data
+      - ./volumes/nodered/ssh:/root/.ssh
+    # Add other Node-RED configuration options as needed
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: unless-stopped
+    user: "1000"
+    ports:
+      - '1883:1883'
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - ./volumes/mosquitto/config:/mosquitto/config
+      - ./volumes/mosquitto/data:/mosquitto/data
+      - ./volumes/mosquitto/log:/mosquitto/log
+      - ./volumes/mosquitto/pwfile:/mosquitto/pwfile
+    # Add other Mosquitto configuration options as needed
+
+volumes:
+  influxdb-data:
+
