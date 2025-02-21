@@ -1,3 +1,0 @@
-[submodule "Firmware/components/ad5940lib/ad5940lib"]
-	path = Firmware/components/ad5940lib/ad5940lib
-	url = https://github.com/analogdevicesinc/ad5940lib.git
