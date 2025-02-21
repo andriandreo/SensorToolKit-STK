@@ -24,9 +24,11 @@ However, certain pieces of the code are adapted either from [Analog Devices, Inc
 
 ## Firmware 
 
-The tested port for ESP32 MCUs (including full support for ESP32-S3 and ESP32-C3 XIAO boards by [SeeedStudio](https://www.seeedstudio.com/)) and implemented applications/techniques are hosted inside the [`Firmware` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware).
+The tested port for ESP32 MCUs (including full support for ESP32-S3 and ESP32-C3 XIAO boards by [SeeedStudio](https://www.seeedstudio.com/)) and implemented applications/techniques are hosted inside the [`Firmware` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware/ESP-IDF).
 
-Further information related to its setup can be found in the corresponding [`README`](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware/README.md) inside.
+Further information related to its setup can be found in the corresponding [`README`](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware/ESP-IDF/README.md) inside.
+
+Another working port for Arduino-compatible MCUs (with tested support for nRF52840, ESP32-S3 and ESP32-C3 XIAO boards by [SeeedStudio](https://www.seeedstudio.com/)) can be found inside the corresponding [`Firmware` folder](https://github.com/andriandreo/SensorToolKit-STK/tree/main/Firmware/Arduino).
 
 ## Server Side
 

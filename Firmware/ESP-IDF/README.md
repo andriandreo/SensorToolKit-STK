@@ -41,10 +41,10 @@ To setup and compile the STK firmware with this configuration:
 
 1. [Install the ESP-IDF for your OS](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/index.html#installation) and/or your favourite IDE (e.g. [VSCode](https://docs.espressif.com/projects/vscode-esp-idf-extension/en/latest/));
 1. clone this repository recursively (`git clone --recursive https://github.com/andriandreo/SensorToolKit-STK.git`) to download also the [`ad5940lib` from Analog Devices, Inc.](https://github.com/analogdevicesinc/ad5940lib), or manually download/clone both as usual;
-1. place the contents of `ad5940lib` inside `Firmware/components/ad5940lib` as depicted;
+1. place the contents of `ad5940lib` inside `Firmware/ESP-IDF/components/ad5940lib` as depicted;
 1. edit `ad5940.h` file to uncomment `#define CHIPSEL_594X      /**< AD5940 or AD5941 */` for selecting AD5940/AD5941 chipsets instead of ADUCM350;
-1. `cd` to `/path/to/SensorToolKit-STK/Firmware` or open `Firmware` folder with the IDE;
-1. edit the `Firmware/main/CMakeLists.txt` to uncomment the desired application, note that `main.c` MUST REMAIN UNCOMMENTED as well;
+1. `cd` to `/path/to/SensorToolKit-STK/Firmware/ESP-IDF` or open `ESP-IDF` folder with the IDE;
+1. edit the `Firmware/ESP-IDF/main/CMakeLists.txt` to uncomment the desired application, note that `main.c` MUST REMAIN UNCOMMENTED as well;
 1. connect the board *via* USB and select the right COM port in the IDE;
 1. select the target board *via* `idf.py set-target <target>` or IDE;
 1. configure the application -ESP32 interfacing, flash memory (`Serial flasher config > Flash size`) and Wi-Fi/MQTT credentials (`IoT-Wireless Configuration`)- *via* `idf.py menuconfig` or graphically with the selected IDE;
