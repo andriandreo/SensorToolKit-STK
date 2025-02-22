@@ -1,5 +1,5 @@
 /******************************************************************************  
- * @file       AD5940_OCP_ADCPolling_MQTT.c
+ * @file       AD5940_OCP-ADCPolling_MQTT.c
  * @brief      Source file for performing Open Circuit Pontential (OCP)
  *             measurements using ADC Polling mode.
  *             Data is sent to a MQTT broker via Wi-Fi. 

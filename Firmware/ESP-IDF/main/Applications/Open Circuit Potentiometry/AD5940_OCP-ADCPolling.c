@@ -1,5 +1,5 @@
 /******************************************************************************  
- * @file       AD5940_OCP_ADCPolling.c
+ * @file       AD5940_OCP-ADCPolling.c
  * @brief      Source file for performing Open Circuit Pontential (OCP)
  *             measurements using ADC Polling mode.  
  * 
