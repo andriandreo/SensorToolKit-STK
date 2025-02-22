@@ -4,8 +4,8 @@
  *             process data.
  * 
  * @author     Andrés Alberto Andreo Acosta (based on nxu2's work)
- * @version    V1.0.0
- * @date       January 2025
+ * @version    V1.0.1
+ * @date       February 2025
  * 
  * @par        Revision History:
  * 
@@ -181,6 +181,7 @@ void AD5940_Main(void)
   AppAMPInit(AppBuff, APPBUFF_SIZE);      /* Initialize AMP application. Provide a buffer, which is used to store sequencer commands */
   AppAMPCtrl(AMPCTRL_START, 0);           /* Control AMP measurement to start. Second parameter has no meaning with this command. */
 
+  printf("Time (s), Current (uA)\n");
   while(1)
   {
     /* Check if interrupt flag which will be set when interrupt occurred. */
