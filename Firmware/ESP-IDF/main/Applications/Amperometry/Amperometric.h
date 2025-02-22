@@ -1,5 +1,5 @@
 /******************************************************************************  
- * @file       Amperometric.c
+ * @file       Amperometric.h
  * @brief      Header file for performing amperometric measurements
  *             via the LPTIA loop using ADC with sequencer support.
  * 
