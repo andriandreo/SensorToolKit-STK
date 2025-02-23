@@ -70,17 +70,17 @@
 #define APPBUFF_SIZE 1000
 uint32_t AppBuff[APPBUFF_SIZE];
 float LFOSCFreq;
-int count = 0;
+int sample_index = 0;
 /* It's your choice here how to do with the data. Here is just an example to print them to UART */
 int32_t AMPShowResult(float *pData, uint32_t DataCount)
 {
   /* Print data*/
   for(int i=0;i<DataCount;i++)
   {
-    printf("%d, %f uA\n", count, pData[i]);
+    printf("%d, %f uA\n", sample_index, pData[i]);
   }
 
-  count += 1;
+  sample_index += 1;
   return 0;
 }
 

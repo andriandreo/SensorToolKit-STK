@@ -423,11 +423,11 @@ void AD5940_adcISR(void){
   }
 }
 
-int count = 0;
+int sample_index = 0;
 void AD5940_PrintResult(void){
   float dV;
-  printf("%d, ",count);
-  count += 1;
+  printf("%d, ", sample_index);
+  sample_index += 1;
   for(int i=0; i<data_count; i++){
     uint32_t data = ADCbuff[i]&0xffff;
     dV = 1000.0*AD5940_ADCCode2Volt(data, ADCPGA_1P5, 1.82);

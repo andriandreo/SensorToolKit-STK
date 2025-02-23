@@ -428,11 +428,11 @@ void AD5940_adcISR(void){
   }
 }
 
-int count = 0;
+int sample_index = 0;
 void AD5940_PrintResult(void){
   float dV;
-  printf("%d, ",count);
-  count += 1;
+  printf("%d, ", sample_index);
+  sample_index += 1;
   char MQTTstring[1024]; // NOTE: Increase buffer size if stuck [!!!]
   char temp_string[512]; // NOTE: Increase buffer size if stuck [!!!]
   snprintf(MQTTstring, sizeof(MQTTstring), "{"); // Start JSON array
