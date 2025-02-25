@@ -143,6 +143,7 @@
         "y": 0
       },
       "id": 1,
+      "maxDataPoints": 1000000,
       "options": {
         "legend": {
           "calcs": [],
@@ -162,7 +163,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB2}"
           },
-          "query": "from(bucket: \"Open Circuit Potentiometry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"OCP\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CH1\" or r[\"_field\"] == \"CH2\" or r[\"_field\"] == \"CH3\" or r[\"_field\"] == \"CH4\" or r[\"_field\"] == \"CH5\" or r[\"_field\"] == \"CH6\" or r[\"_field\"] == \"CH7\" or r[\"_field\"] == \"CH8\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"last\")",
+          "query": "from(bucket: \"Open Circuit Potentiometry\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"OCP\")\n  |> filter(fn: (r) => r[\"_field\"] == \"CH1\" or r[\"_field\"] == \"CH2\" or r[\"_field\"] == \"CH3\" or r[\"_field\"] == \"CH4\" or r[\"_field\"] == \"CH5\" or r[\"_field\"] == \"CH6\" or r[\"_field\"] == \"CH7\" or r[\"_field\"] == \"CH8\")\n  |> yield(name: \"raw\")\n",
           "refId": "A"
         }
       ],
@@ -266,6 +267,6 @@
   "timezone": "browser",
   "title": "OCP",
   "uid": "beaz0ryti1jpcc",
-  "version": 6,
+  "version": 9,
   "weekStart": ""
 }
