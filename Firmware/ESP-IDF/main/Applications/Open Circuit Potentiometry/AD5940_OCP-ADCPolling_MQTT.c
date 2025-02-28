@@ -5,12 +5,11 @@
  *             Data is sent to a MQTT broker via Wi-Fi. 
  * 
  * @author     Andrés Alberto Andreo Acosta
- * @version    V1.0.2
- * @date       March 2024
+ * @version    V1.0.3
+ * @date       February 2025
  * 
  * @par        Revision History:
- *             * Reduced unused code 
- *             * Optimized LPTIA Switch configuration for OCP
+ *             * Included CSV-like serial output via printf 
  * 
  * @todo       * Check for differences between several ADC MUX inputs.
  *             * Test HSTIA as the AFE for MUX with Switch Matrix
@@ -179,6 +178,8 @@ void AD5940_Main(void)
   AD5940_ADCPowerCtrlS(bTRUE);
   AD5940_ADCConvtCtrlS(bTRUE);
   
+  int sample_index = 0;
+  printf("Time (s), OCP (mV),\n"); // CSV - Heading
   while(1)
   {
     uint32_t rd;
@@ -193,8 +194,9 @@ void AD5940_Main(void)
       if(count == 300) /* Print data @1Hz */
       {
         count = 0;
+        sample_index += 1;
         float diff_volt = AD5940_ADCCode2Volt(rd, ADCPGA_GAIN_SEL, 1.82);
-        printf("ADC Code: %d, diff-volt: %.4f\n",(int)rd, diff_volt);
+        printf("%d, %.4f,\n",sample_index, diff_volt);
         snprintf(MQTTstring, sizeof(MQTTstring), "{\"ADCCode\":%d, \"OCP\":%.4f}", (int)rd, diff_volt);
         printf("%s\n", MQTTstring);
         esp_sendMQTT("SENSOR/OCP", MQTTstring);
