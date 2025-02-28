@@ -9,7 +9,7 @@
  * 
  * @par        Revision History:
  * 
- * @todo       * Test HSTIA as the AFE for MUX with Switch Matrix
+ * @todo       * Test HSTIA as the AFE for MUX with Switch Matrix.
  *             * Implement Wi-Fi, BLE and MQTT functionality.
  * 
  * This code configures ADC, sequencer and FIFO to take voltage measurements

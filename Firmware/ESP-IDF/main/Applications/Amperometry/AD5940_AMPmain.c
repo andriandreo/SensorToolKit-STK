@@ -9,8 +9,8 @@
  * 
  * @par        Revision History:
  * 
- * @todo       * Test HSTIA as the AFE for MUX with Switch Matrix
- *             * Minimize RF-coupled signal (+/-6 nA of noise)
+ * @todo       * Test HSTIA as the AFE for MUX with Switch Matrix.
+ *             * Minimize RF-coupled signal (+/-6 nA of noise).
  * 
  * This code is configured to take sub-µA current measurements with a 2-wire 
  * zero-biased sensor.

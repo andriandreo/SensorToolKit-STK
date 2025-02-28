@@ -9,9 +9,9 @@
  * @date       January 2025
  * 
  * @par        Revision History:
- *             * Implemented Wi-Fi connectivity and MQTT protocol
+ *             * Implemented Wi-Fi connectivity and MQTT protocol.
  * 
- * @todo       * Test HSTIA as the AFE for MUX with Switch Matrix
+ * @todo       * Test HSTIA as the AFE for MUX with Switch Matrix.
  *             * Implement Bluetooth functionality.
  * 
  * This code configures ADC, sequencer and FIFO to take voltage measurements

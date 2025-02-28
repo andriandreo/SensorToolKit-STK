@@ -9,10 +9,10 @@
  * @date       February 2025
  * 
  * @par        Revision History:
- *             * Included CSV-like serial output via printf 
+ *             * Included CSV-like serial output via printf.
  * 
  * @todo       * Check for differences between several ADC MUX inputs.
- *             * Test HSTIA as the AFE for MUX with Switch Matrix
+ *             * Test HSTIA as the AFE for MUX with Switch Matrix.
  *             * Implement Bluetooth functionality.
  * 
  * ****************************************************************************
