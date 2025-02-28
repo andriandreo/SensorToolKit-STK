@@ -181,7 +181,7 @@ void AD5940_Main(void)
   AppAMPInit(AppBuff, APPBUFF_SIZE);      /* Initialize AMP application. Provide a buffer, which is used to store sequencer commands */
   AppAMPCtrl(AMPCTRL_START, 0);           /* Control AMP measurement to start. Second parameter has no meaning with this command. */
 
-  printf("Time (s), Current (uA)\n");
+  printf("Time (s), Current (uA),\n");
   while(1)
   {
     /* Check if interrupt flag which will be set when interrupt occurred. */

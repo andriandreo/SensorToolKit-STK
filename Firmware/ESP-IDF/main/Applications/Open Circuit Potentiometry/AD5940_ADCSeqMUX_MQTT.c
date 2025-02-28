@@ -457,7 +457,7 @@ void AD5940_PrintResult(void){
 }
 
 void AD5940_Main(void){
-  printf("Time (s), CH[1], CH[2], CH[3], CH[4], CH[5], CH[6], CH[7], CH[8]\n"); // CSV - Heading
+  printf("Time (s), CH[1], CH[2], CH[3], CH[4], CH[5], CH[6], CH[7], CH[8],\n"); // CSV - Heading
   AD5940PlatformCfg();
   AD5940_ADC_Init();
   AD5940_WUPTCtrl(bTRUE); // Start WUPT, so the sequence will be run periodically.
