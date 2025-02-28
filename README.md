@@ -6,7 +6,7 @@ A portable potentiostat built upon AD5940/AD5941 Analog Front End (Analog Device
 
 ## About
 
-The **SensorToolKit (STK) Project** is built upon the collaboration of [JLM Innovation GmbH](https://www.jlm-innovation.de/) and [Nanosensors Research Group](https://www.chemosens.recerca.urv.cat/en/research/lines/) ([CHEMOSENS](www.chemosens.recerca.urv.cat/en)) at the [Department of Analytical Chemistry and Organic Chemistry](https://www.qaqo.urv.cat/en/) of the [Universitat Rovira i Virgili](https://www.urv.cat/en/).
+The **SensorToolKit (STK) Project** is built upon the collaboration of [JLM Innovation GmbH](https://www.jlm-innovation.de/) and [Nanosensors Research Group](https://www.chemosens.recerca.urv.cat/en/research/lines/) ([CHEMOSENS](https://www.chemosens.recerca.urv.cat/en)) at the [Department of Analytical Chemistry and Organic Chemistry](https://www.qaqo.urv.cat/en/) of the [Universitat Rovira i Virgili](https://www.urv.cat/en/).
 
 ### Collaborators
 
