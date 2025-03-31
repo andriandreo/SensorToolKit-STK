@@ -1,5 +1,4 @@
-idf_component_register(SRCS
-                            "main.c"
+idf_component_register(SRCS "main.c"
                             # "Applications/Amperometry/AD5940_AMPmain.c" "Applications/Amperometry/Amperometric.c"
                             # "Applications/Open Circuit Potentiometry/AD5940_ADCSeqMUX.c" 
                             "Applications/Open Circuit Potentiometry/AD5940_ADCSeqMUX_MQTT.c"
