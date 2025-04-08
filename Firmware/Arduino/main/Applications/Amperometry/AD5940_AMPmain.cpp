@@ -156,7 +156,7 @@ void AD5940AMPStructInit(void)
   /* Configure general parameters */
   pAMPCfg->SeqStartAddr = 0;
   pAMPCfg->MaxSeqLen = 512;     /* @todo add checker in function */  
-  pAMPCfg->RcalVal = RCAL;      /* RCAL on EndoPALi board = 200 Ohm */
+  pAMPCfg->RcalVal = RCAL;      /* RCAL on STK board = 200 Ohm */
   pAMPCfg->NumOfData = -1;      /* Never stop until you stop it manually by AppAMPCtrl() function */	
 	
 	
