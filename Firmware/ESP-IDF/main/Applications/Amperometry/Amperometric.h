@@ -50,8 +50,8 @@
 #include "string.h"
 #include "math.h"
 
-#define RCAL 200.0          /* Set to the RCAL value for your design - 200 Ohm on EndoPALi-board (!) */
-#define EXT_RTIA 10000000.0 /* Set to the External RTIA (RC0_0-RC0_1) value for your design - 10 MOhm on EndoPALi-board (!) */
+#define RCAL 200.0          /* Set to the RCAL value for your design - 200 Ohm on STK-board (!) */
+#define EXT_RTIA 10000000.0 /* Set to the External RTIA (RC0_0-RC0_1) value for your design - 10 MOhm on STK-board (!) */
 
 #define DAC12BITVOLT_1LSB   (2200.0f/4095)  //mV
 #define DAC6BITVOLT_1LSB    (DAC12BITVOLT_1LSB*64)  //mV
