@@ -1,4 +1,4 @@
-# SensorToolKit-STK [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![GitHub Release](https://img.shields.io/github/release/tterb/PlayMusic.svg?style=flat)]() [![Github All Releases](https://img.shields.io/github/downloads/atom/atom/total.svg?style=flat)]()
+# SensorToolKit-STK [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![GitHub Release](https://img.shields.io/github/v/release/andriandreo/SensorToolKit-STK)](https://github.com/andriandreo/SensorToolKit-STK/releases/latest) [![GitHub All Downloads](https://img.shields.io/github/downloads/andriandreo/SensorToolKit-STK/total)]() [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15744692.svg)](https://doi.org/10.5281/zenodo.15744692)
 
 <img src="STK.png" alt="STK Board" width="500"/>
 
