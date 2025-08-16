@@ -1,6 +1,6 @@
 # STK - Server Side
 
-The Server Side for the SensorToolKit Framework can be deployed in any machine with Wi-Fi connectivity capable of running Docker.
+The Server Side for the Sensor ToolKit Framework can be deployed in any machine with Wi-Fi connectivity capable of running Docker.
 
 ## Containers Deployment
 
