@@ -47,8 +47,8 @@ To setup and compile the STK firmware with this configuration:
 1. edit the `Firmware/ESP-IDF/main/CMakeLists.txt` to uncomment the desired application, note that `main.c` MUST REMAIN UNCOMMENTED as well;
 1. connect the board *via* USB and select the right COM port in the IDE;
 1. select the target board *via* `idf.py set-target <target>` or IDE;
-1. configure the application -ESP32 interfacing, flash memory (`Serial flasher config > Flash size`) and Wi-Fi/MQTT credentials (`IoT-Wireless Configuration`)- *via* `idf.py menuconfig` or graphically with the selected IDE;
-1. finally build the project (`idf.py build`) and flash the firmware to the board (`idf.py flash`) - COM PORT may be selected at this point *via* `idf.py flash -p <port>`.
+1. configure the application—ESP32 interfacing, flash memory (`Serial flasher config > Flash size`) and Wi-Fi/MQTT credentials (`IoT-Wireless Configuration`)—*via* `idf.py menuconfig` or graphically with the selected IDE;
+1. finally build the project (`idf.py build`) and flash the firmware to the board (`idf.py flash`) — COM PORT may be selected at this point *via* `idf.py flash -p <port>`.
 
 Further guidance for `idf.py` CLI command tools can be found [here](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/tools/idf-py.html).
 
