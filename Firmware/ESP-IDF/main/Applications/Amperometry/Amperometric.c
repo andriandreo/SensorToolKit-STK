@@ -94,16 +94,16 @@ AppAMPCfg_Type AppAMPCfg =
   
   /* LPTIA Configure */
   .ExtRtia = bFALSE,              /* Set to true if using external RTIA */
-  .LptiaRtiaSel = LPTIARTIA_160K, /* Configure RTIA - Rcal = 200 Ohm cannot CAL RTIA > 160 KOhm (!) */ 
-  .LpTiaRf = LPTIARF_1M,          /* Configure LPF resistor - 1 MOhm optimal for DC meas. as per datasheet */
+  .LptiaRtiaSel = LPTIARTIA_160K, /* Configure RTIA — Rcal = 200 Ohm cannot CAL RTIA > 160 KOhm (!) */ 
+  .LpTiaRf = LPTIARF_1M,          /* Configure LPF resistor — 1 MOhm optimal for DC meas. as per datasheet */
   .LpTiaRl = LPTIARLOAD_SHORT,
   .ReDoRtiaCal = bTRUE,
   .RtiaCalValue = {0.0, 0.0},
 	.ExtRtiaVal = EXT_RTIA,       
   
 /*LPDAC Configure */
-  .Vzero = 1100,                  /* Sets voltage on SE0 and LPTIA */
-  .SensorBias = 0,                /* Sets voltage between RE0 and SE0 - Zero-biased sensor here, change LPTIASWx otherwise as well (!) */
+  .Vzero = 1100,                  /* Sets voltage on SE0 and LPTIA (mV) */
+  .SensorBias = 0,                /* Sets voltage between RE0 and SE0 (mV) — Zero-biased sensor here, change LPTIASWx otherwise as well (!) */
   
 /* ADC Configure*/
   .ADCPgaGain = ADCPGA_1P5,
@@ -234,11 +234,11 @@ static AD5940Err AppAMPSeqCfgGen(void)
   if(AppAMPCfg.ExtRtia == bTRUE)
   {
     lp_loop.LpAmpCfg.LpTiaRtia = LPTIARTIA_OPEN;
-    lp_loop.LpAmpCfg.LpTiaSW = LPTIASW(9)|LPTIASW(2)|LPTIASW(4)|LPTIASW(8)|LPTIASW(5)|LPTIASW(6)|LPTIASW(12)|LPTIASW(13); /* SW8 to short CE0 & RE0 internally; SW6 to short RE0 & SE0 to Vbias - Best performance for zero-biased sensors */
+    lp_loop.LpAmpCfg.LpTiaSW = LPTIASW(9)|LPTIASW(2)|LPTIASW(4)|LPTIASW(8)|LPTIASW(5)|LPTIASW(6)|LPTIASW(12)|LPTIASW(13); /* SW8 to short CE0 & RE0 internally; SW6 to short RE0 & SE0 to Vbias (unset for Vbias ≠ 0) — Best performance for zero-biased sensors */
   }else
   {
     lp_loop.LpAmpCfg.LpTiaRtia = AppAMPCfg.LptiaRtiaSel;
-    lp_loop.LpAmpCfg.LpTiaSW = LPTIASW(5)|LPTIASW(6)|LPTIASW(8)|LPTIASW(2)|LPTIASW(4)|LPTIASW(12)|LPTIASW(13); /* SW8 to short CE0 & RE0 internally; SW6 to short RE0 & SE0 to Vbias - Best performance for zero-biased sensors */
+    lp_loop.LpAmpCfg.LpTiaSW = LPTIASW(5)|LPTIASW(6)|LPTIASW(8)|LPTIASW(2)|LPTIASW(4)|LPTIASW(12)|LPTIASW(13); /* SW8 to short CE0 & RE0 internally; SW6 to short RE0 & SE0 to Vbias (unset for Vbias ≠ 0) — Best performance for zero-biased sensors */
   }
   AD5940_LPLoopCfgS(&lp_loop);
 

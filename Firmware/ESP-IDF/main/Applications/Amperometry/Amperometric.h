@@ -50,8 +50,8 @@
 #include "string.h"
 #include "math.h"
 
-#define RCAL 200.0          /* Set to the RCAL value for your design - 200 Ohm on STK-board (!) */
-#define EXT_RTIA 10000000.0 /* Set to the External RTIA (RC0_0-RC0_1) value for your design - 10 MOhm on STK-board (!) */
+#define RCAL 200.0          /* Set to the RCAL value for your design — 200 Ohm on STK-board (!) */
+#define EXT_RTIA 10000000.0 /* Set to the External RTIA (RC0_0-RC0_1) value for your design — 10 MOhm on STK-board (!) */
 
 #define DAC12BITVOLT_1LSB   (2200.0f/4095)  //mV
 #define DAC6BITVOLT_1LSB    (DAC12BITVOLT_1LSB*64)  //mV
@@ -88,8 +88,8 @@ typedef struct
   uint32_t LpTiaRf;             /* Rfilter select */
   uint32_t LpTiaRl;             /* SE0 Rload select */
   fImpPol_Type RtiaCalValue;           /* Calibrated Rtia value */
-  float Vzero;                  /* Voltage on SE0 pin and Vzero, optimumly 1100mV*/
-  float SensorBias;             /* Sensor bias voltage = VRE0 - VSE0 */
+  float Vzero;                  /* Voltage on SE0 pin and Vzero, optimumly 1100mV (mV) */
+  float SensorBias;             /* Sensor bias voltage = VRE0 - VSE0 (mV) */
   BoolFlag ExtRtia;             /* Use internal or external Rtia */
   float ExtRtiaVal;							/* External Rtia value if using one */
   BoolFlag AMPInited;           /* If the program run firstly, generated sequence commands */

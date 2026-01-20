@@ -164,10 +164,10 @@ void AD5940AMPStructInit(void)
   pAMPCfg->AmpODR = 1;          	        /* Time between samples in seconds */
   pAMPCfg->FifoThresh = 1;      		      /* Number of measurements before alerting host microcontroller */
 
-  pAMPCfg->SensorBias = 0;   			        /* Sensor bias voltage between RE0 and SE0 - Zero-biased sensor here, change LPTIASWx otherwise as well (!) */
+  pAMPCfg->SensorBias = 0;   			        /* Sensor bias voltage between RE0 and SE0 (mV) — Zero-biased sensor here, change LPTIASWx otherwise as well (!) */
 	pAMPCfg->LptiaRtiaSel = LPTIARTIA_160K; /* Must be < 160 KOhm | Rcal = 200 Ohm (!) */ 
 	pAMPCfg->LpTiaRl = LPTIARLOAD_3K6;
-	pAMPCfg->Vzero = 1100;        		      /* Vzero voltage. Voltage on Sense electrode. Unit is mV*/
+	pAMPCfg->Vzero = 1100;        		      /* Vzero voltage (mV). Voltage on Sense electrode. Unit is mV*/
 	
 	pAMPCfg->ADCRefVolt = 1.82;		          /* Measure voltage on Vref_1V8 pin */
 }
